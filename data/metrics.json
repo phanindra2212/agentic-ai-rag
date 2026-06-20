@@ -1,0 +1,76 @@
+{
+    "total_documents": 1,
+    "total_chunks": 59,
+    "total_queries": 5,
+    "retrieval_times": [
+        2.151420831680298,
+        4.671906471252441,
+        4.883379220962524,
+        8.708042860031128,
+        5.685716152191162
+    ],
+    "response_times": [
+        1.7855875492095947,
+        4.950836181640625,
+        2.1927194595336914,
+        8.204752922058105,
+        13.815857648849487
+    ],
+    "search_history": [
+        {
+            "question": "what is main topic of this pdf ",
+            "answer": "An error occurred while generating response: Error calling model 'gemini-2.5-flash' (INVALID_ARGUMENT): 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}",
+            "timestamp": "2026-06-20T16:03:14.788582",
+            "retrieval_time": 2.151420831680298,
+            "response_time": 1.7855875492095947,
+            "evaluation": {}
+        },
+        {
+            "question": "what is the full form of nlp",
+            "answer": "NLP stands for Natural Language Processing [Document: NLP-UNIT-1.pdf, Page: 3].",
+            "timestamp": "2026-06-20T16:28:44.393590",
+            "retrieval_time": 4.671906471252441,
+            "response_time": 4.950836181640625,
+            "evaluation": {
+                "context_precision": 0.8,
+                "context_recall": 0.8,
+                "faithfulness": 0.8,
+                "answer_relevance": 0.8
+            }
+        },
+        {
+            "question": "who is lashmikantj",
+            "answer": "The uploaded documents do not contain enough information.",
+            "timestamp": "2026-06-20T16:33:27.007856",
+            "retrieval_time": 4.883379220962524,
+            "response_time": 2.1927194595336914,
+            "evaluation": {}
+        },
+        {
+            "question": "what is the unit name ",
+            "answer": "The unit name is NLP UNIT-II [Document: NLP-UNIT-2.pdf, Page: 1].",
+            "timestamp": "2026-06-20T16:43:03.598908",
+            "retrieval_time": 8.708042860031128,
+            "response_time": 8.204752922058105,
+            "evaluation": {
+                "context_precision": 0.8,
+                "context_recall": 0.8,
+                "faithfulness": 0.8,
+                "answer_relevance": 0.8
+            }
+        },
+        {
+            "question": "who is my professor or teacher for  this ",
+            "answer": "The professor or teacher for this unit is Duggirala SriRamyaKrishna, who is an Asst professor [Document: NLP-UNIT-2.pdf, Page: 1].",
+            "timestamp": "2026-06-20T16:45:01.977062",
+            "retrieval_time": 5.685716152191162,
+            "response_time": 13.815857648849487,
+            "evaluation": {
+                "context_precision": 0.8,
+                "context_recall": 0.8,
+                "faithfulness": 0.8,
+                "answer_relevance": 0.8
+            }
+        }
+    ]
+}
