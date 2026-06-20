@@ -4430,3 +4430,19 @@ json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
 2026-06-20 22:47:56,750 - rag_assistant - INFO - [pptx_loader.py:53] - Successfully loaded PPTX. Slides: 1
 2026-06-20 22:47:56,752 - rag_assistant - INFO - [txt_loader.py:12] - Starting TXT loading for file: data\test_temp\test_sample.txt
 2026-06-20 22:47:56,770 - rag_assistant - INFO - [txt_loader.py:28] - Successfully loaded TXT file.
+2026-06-20 22:54:50,630 - rag_assistant - INFO - [embeddings.py:15] - Initializing Hugging Face Inference API (Model: BAAI/bge-m3)...
+2026-06-20 22:54:50,717 - rag_assistant - WARNING - [embeddings.py:27] - Hugging Face Inference API connection test failed: HTTPSConnectionPool(host='api-inference.huggingface.co', port=443): Max retries exceeded with url: /pipeline/feature-extraction/BAAI/bge-m3 (Caused by NameResolutionError("HTTPSConnection(host='api-inference.huggingface.co', port=443): Failed to resolve 'api-inference.huggingface.co' ([Errno 11001] getaddrinfo failed)")). Triggering fallbacks...
+2026-06-20 22:54:50,718 - rag_assistant - WARNING - [embeddings.py:30] - Hugging Face Inference API failed to initialize: HTTPSConnectionPool(host='api-inference.huggingface.co', port=443): Max retries exceeded with url: /pipeline/feature-extraction/BAAI/bge-m3 (Caused by NameResolutionError("HTTPSConnection(host='api-inference.huggingface.co', port=443): Failed to resolve 'api-inference.huggingface.co' ([Errno 11001] getaddrinfo failed)")). Trying fallbacks...
+2026-06-20 22:54:50,718 - rag_assistant - INFO - [embeddings.py:34] - Initializing local Hugging Face Embeddings (Model: sentence-transformers/all-MiniLM-L6-v2)...
+2026-06-20 22:54:57,684 - rag_assistant - INFO - [embeddings.py:38] - Local Hugging Face Embeddings initialized successfully.
+2026-06-20 22:54:57,685 - rag_assistant - INFO - [ingest.py:43] - Using Chroma collection: rag_documents_sentence-transformers_all-MiniLM-L6-v2
+2026-06-20 23:16:52,281 - rag_assistant - INFO - [context_agent.py:11] - Executing Context Optimization Agent...
+2026-06-20 23:16:52,281 - rag_assistant - INFO - [context_agent.py:45] - Context Agent optimized docs: 3 -> 2
+2026-06-20 23:16:52,285 - rag_assistant - INFO - [docx_loader.py:12] - Starting DOCX loading for file: fake_file.docx
+2026-06-20 23:16:52,285 - rag_assistant - INFO - [docx_loader.py:28] - Successfully loaded DOCX. Documents: 1
+2026-06-20 23:16:52,290 - rag_assistant - INFO - [pdf_loader.py:13] - Starting PDF loading for file: fake_file.pdf
+2026-06-20 23:16:52,290 - rag_assistant - INFO - [pdf_loader.py:29] - Successfully loaded PDF. Pages: 1
+2026-06-20 23:16:52,422 - rag_assistant - INFO - [pptx_loader.py:12] - Starting PPTX loading for file: fake_file.pptx
+2026-06-20 23:16:52,422 - rag_assistant - INFO - [pptx_loader.py:53] - Successfully loaded PPTX. Slides: 1
+2026-06-20 23:16:52,424 - rag_assistant - INFO - [txt_loader.py:12] - Starting TXT loading for file: data\test_temp\test_sample.txt
+2026-06-20 23:16:52,438 - rag_assistant - INFO - [txt_loader.py:28] - Successfully loaded TXT file.
