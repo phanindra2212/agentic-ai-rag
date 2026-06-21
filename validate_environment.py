@@ -26,7 +26,7 @@ def validate_env():
         
         # Test loading descriptor directly to intercept tp_new errors
         try:
-            import google.protobuf.descriptor
+            import google.protobuf.descriptor  # noqa: F401
         except TypeError as e:
             if "Metaclasses with custom tp_new are not supported" in str(e) or "Descriptors cannot be created directly" in str(e):
                 errors.append(
@@ -99,6 +99,8 @@ def validate_env():
     print(f"Streamlit   : {streamlit_ver}")
     print(f"ChromaDB    : {chroma_ver}")
     print(f"Torch       : {torch_ver}")
+    print(f"Transformers: {trans_ver}")
+    print(f"Sentence-Transformers: {st_ver}")
     print("=" * 60)
 
 if __name__ == "__main__":

@@ -64,7 +64,7 @@ def run_diagnostics():
     
     # Test importing and loading protobuf
     try:
-        import google.protobuf.descriptor
+        import google.protobuf.descriptor  # noqa: F401
     except TypeError as e:
         if "Descriptors cannot be created directly" in str(e):
             conflicts.append(

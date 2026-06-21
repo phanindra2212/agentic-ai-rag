@@ -1,5 +1,4 @@
-import os
-from typing import Dict, List, Any
+from typing import Dict, Any
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from rag.memory import format_chat_history_for_prompt

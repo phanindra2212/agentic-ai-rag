@@ -1,5 +1,4 @@
-from typing import Dict, List, Any
-from langchain_core.documents import Document
+from typing import Dict, Any
 from utils.logger import logger
 
 def context_optimization_node(state: Dict[str, Any]) -> Dict[str, Any]:

@@ -1,9 +1,9 @@
-import os
 import json
 from typing import Dict, List, Any, TypedDict
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 from utils.logger import logger
+from config.settings import get_gemini_api_key
 
 class AgentState(TypedDict):
     question: str
@@ -21,8 +21,6 @@ class AgentState(TypedDict):
     chat_history: List[Dict[str, str]]
     filters: Dict[str, Any]
     retries: int
-
-from config.settings import get_gemini_api_key
 
 def _get_llm() -> Any:
     api_key = get_gemini_api_key()

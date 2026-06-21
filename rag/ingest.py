@@ -1,5 +1,3 @@
-import os
-import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Tuple
@@ -16,7 +14,7 @@ from loaders.txt_loader import load_txt
 from rag.embeddings import get_embeddings_model
 from utils.logger import logger
 from utils.helpers import clean_text, get_file_extension
-from utils.metrics import update_document_stats, get_analytics
+from utils.metrics import update_document_stats
 
 def get_vector_store() -> Chroma:
     """Initializes and returns the persistent Chroma vector store.

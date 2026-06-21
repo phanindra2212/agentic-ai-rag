@@ -1,4 +1,4 @@
-from typing import Dict, List, Any
+from typing import Dict, Any
 from rag.retriever import search_documents
 from utils.logger import logger
 

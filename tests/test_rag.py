@@ -7,13 +7,11 @@ import os
 os.environ["GEMINI_API_KEY"] = "fake-key-for-testing"
 
 from config import settings
-from utils.helpers import clean_text, get_file_extension, format_citations
+from utils.helpers import clean_text, get_file_extension
 from loaders.txt_loader import load_txt
 from loaders.pdf_loader import load_pdf
 from loaders.docx_loader import load_docx
 from loaders.pptx_loader import load_pptx
-from agents.query_agent import query_understanding_node
-from agents.retrieval_agent import retrieval_agent_node
 from agents.context_agent import context_optimization_node
 
 class TestRAGAssistant(unittest.TestCase):

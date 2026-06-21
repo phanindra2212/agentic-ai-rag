@@ -1,5 +1,4 @@
 import os
-from typing import Any
 from langchain_core.embeddings import Embeddings
 from config.settings import EMBEDDING_MODEL_NAME, FALLBACK_EMBEDDING_MODEL_NAME
 from utils.logger import logger

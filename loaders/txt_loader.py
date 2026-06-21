@@ -25,7 +25,7 @@ def load_txt(file_path: str) -> List[Document]:
             doc.metadata["page_number"] = 1
             doc.metadata["source"] = str(path)
             
-        logger.info(f"Successfully loaded TXT file.")
+        logger.info("Successfully loaded TXT file.")
         return docs
     except Exception as e:
         logger.error(f"Error loading TXT file {file_path}: {e}", exc_info=True)

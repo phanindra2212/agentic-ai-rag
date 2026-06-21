@@ -1,5 +1,4 @@
 import os
-import sys
 
 # --- Startup Dependency Validation ---
 try:
@@ -31,8 +30,8 @@ from dotenv import load_dotenv
 env_path = Path(__file__).resolve().parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
-from agents.workflow import execute_agentic_rag
-from ui.streamlit_components import (
+from agents.workflow import execute_agentic_rag  # noqa: E402
+from ui.streamlit_components import (  # noqa: E402
     render_sidebar_uploader,
     render_sidebar_collection_stats,
     render_confidence_badge,
@@ -44,7 +43,7 @@ from ui.streamlit_components import (
     generate_txt_chat,
     generate_pdf_chat
 )
-from utils.logger import logger
+from utils.logger import logger  # noqa: E402
 
 # --- Page Config ---
 st.set_page_config(
