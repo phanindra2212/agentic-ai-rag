@@ -1,5 +1,6 @@
 import os
 import uuid
+import time
 
 # --- Startup Dependency Validation ---
 try:
@@ -55,9 +56,20 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Clear legacy metrics file if present to enforce session isolation and privacy
+try:
+    from config.settings import DATA_DIR
+    legacy_metrics = DATA_DIR / "metrics.json"
+    if legacy_metrics.exists():
+        legacy_metrics.unlink()
+except Exception:
+    pass
+
 # Initialize Session State Variables
 if "session_id" not in st.session_state:
     st.session_state.session_id = str(uuid.uuid4())
+if "session_start_time" not in st.session_state:
+    st.session_state.session_start_time = time.time()
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "last_query_metrics" not in st.session_state:

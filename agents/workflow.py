@@ -122,13 +122,16 @@ def execute_agentic_rag(
             generated_answer=state["response"]
         )
         
-    # Record to local history/metrics file
+    # Record to session history/metrics state
     record_query(
         question=question,
         answer=state["response"],
         retrieval_time=retrieval_time,
         response_time=response_time,
-        evaluation=eval_results
+        evaluation=eval_results,
+        confidence_val=state.get("confidence_val", 0.0),
+        citations=state.get("citations", []),
+        context_chunks=retrieved_texts
     )
     
     # Return aggregated result details for UI consumption

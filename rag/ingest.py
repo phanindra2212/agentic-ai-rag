@@ -6,7 +6,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 
-from config.settings import get_chroma_dir, CHROMA_COLLECTION_NAME, CHUNK_SIZE, CHUNK_OVERLAP
+from config.settings import get_chroma_dir, CHROMA_COLLECTION_NAME, CHUNK_SIZE, CHUNK_OVERLAP, validate_session_isolation
 from loaders.pdf_loader import load_pdf
 from loaders.docx_loader import load_docx
 from loaders.pptx_loader import load_pptx
@@ -20,6 +20,9 @@ def get_vector_store() -> Chroma:
     """Initializes and returns the persistent Chroma vector store.
     Uses model-specific collections to avoid dimension mismatch errors when switching models.
     """
+    if not validate_session_isolation():
+        raise PermissionError("Security Check Failed: Session mismatch detected!")
+        
     embeddings = get_embeddings_model()
     # Ensure directory exists
     chroma_dir = get_chroma_dir()
@@ -67,6 +70,9 @@ def process_and_index_file(file_path: str) -> Tuple[int, int]:
     Returns:
         Tuple of (number of chunks, total pages)
     """
+    if not validate_session_isolation():
+        raise PermissionError("Security Check Failed: Session mismatch detected!")
+        
     logger.info(f"Indexing file: {file_path}")
     try:
         path = Path(file_path)

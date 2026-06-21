@@ -2,6 +2,7 @@ from typing import List, Dict, Any, Tuple
 from langchain_core.documents import Document
 from rag.ingest import get_vector_store
 from utils.logger import logger
+from config.settings import validate_session_isolation
 
 def build_chroma_filter(file_names: List[str] = None, file_types: List[str] = None) -> Dict[str, Any]:
     """Constructs a Chroma metadata filter based on file names and file types."""
@@ -42,6 +43,10 @@ def search_documents(
     Returns:
         List of (Document, similarity_score)
     """
+    if not validate_session_isolation():
+        logger.critical("Security Violation Mismatch: Session mismatch detected during document search! Blocking retrieval.")
+        return []
+        
     logger.info(f"Retrieving documents for query: '{query}' with top_k={top_k}")
     
     try:

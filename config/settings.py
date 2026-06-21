@@ -99,6 +99,51 @@ def clear_current_session(session_id: str):
         shutil.rmtree(chroma_dir, ignore_errors=True)
         chroma_dir.mkdir(parents=True, exist_ok=True)
 
+def validate_session_isolation(target_session_id: str = None) -> bool:
+    """Verifies that all active directory, db collection, and state contexts align
+    perfectly with the current Streamlit session ID to prevent cross-tenant data leaks.
+    """
+    try:
+        import streamlit as st
+        if not st.runtime.exists():
+            return True  # Skip when running unit tests outside Streamlit
+            
+        current_id = st.session_state.get("session_id")
+        if not current_id:
+            from utils.logger import logger
+            logger.error("Security Warning: session_id is not initialized in session_state!")
+            return False
+            
+        # If target_session_id is provided, verify it matches current_id
+        if target_session_id and target_session_id != current_id:
+            from utils.logger import logger
+            logger.critical(f"Security Alert: Session mismatch! Target session '{target_session_id}' does not match active session '{current_id}'!")
+            return False
+            
+        # Verify uploads directory belongs to current session
+        upload_dir = get_upload_dir()
+        if current_id not in str(upload_dir):
+            from utils.logger import logger
+            logger.critical(f"Security Alert: Uploads directory '{upload_dir}' is not isolated for session '{current_id}'!")
+            return False
+            
+        # Verify Chroma directory belongs to current session
+        chroma_dir = get_chroma_dir()
+        if current_id not in str(chroma_dir):
+            from utils.logger import logger
+            logger.critical(f"Security Alert: Chroma directory '{chroma_dir}' is not isolated for session '{current_id}'!")
+            return False
+            
+        return True
+    except Exception as e:
+        try:
+            from utils.logger import logger
+            logger.error(f"Error during security validation: {e}")
+        except Exception:
+            pass
+        return False
+
+
 # File Settings
 SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".pptx", ".txt"}
 MAX_FILE_COUNT = 10

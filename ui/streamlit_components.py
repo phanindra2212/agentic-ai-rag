@@ -1,6 +1,7 @@
 import io
 import os
 import json
+import time
 import pandas as pd
 import streamlit as st
 import plotly.express as px
@@ -129,6 +130,31 @@ def generate_pdf_chat(chat_history: List[Dict[str, Any]]) -> bytes:
         # Return fallback text in bytes
         fallback_txt = f"PDF compilation failed: {e}\n\n" + generate_txt_chat(chat_history)
         return fallback_txt.encode("utf-8")
+
+def generate_sources_export() -> str:
+    """Generates a text listing of files uploaded in the current session."""
+    stats = get_collection_statistics()
+    lines = []
+    lines.append("="*50)
+    lines.append(" CURRENT SESSION UPLOADED SOURCES")
+    lines.append(f" Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    lines.append("="*50)
+    lines.append(f"Total Documents: {stats.get('total_documents', 0)}")
+    lines.append(f"Total Chunks/Vectors: {stats.get('total_chunks', 0)}")
+    lines.append("")
+    
+    for idx, doc in enumerate(stats.get("document_list", [])):
+        lines.append(f"{idx+1}. {doc['file_name']}")
+        lines.append(f"   Type: {doc['file_type']}")
+        lines.append(f"   Chunks: {doc['chunks']}")
+        lines.append(f"   Pages: {doc['pages']}")
+        lines.append(f"   Upload Time: {doc['upload_time']}")
+        lines.append("-" * 30)
+    return "\n".join(lines)
+
+def generate_analytics_export() -> str:
+    """Generates a JSON string of the active session analytics."""
+    return json.dumps(get_analytics(), indent=4)
 
 
 
@@ -262,8 +288,10 @@ def render_sidebar_collection_stats() -> Dict[str, Any]:
     st.sidebar.markdown("---")
     if st.sidebar.button("🗑️ Clear Session", use_container_width=True, help="Wipes all uploaded files, database, and chat history."):
         clear_current_session(st.session_state.session_id)
+        clear_all_metrics()
         st.session_state.chat_history = []
         st.session_state.last_query_metrics = {}
+        st.session_state.session_start_time = time.time()
         st.sidebar.success("Session cleared successfully!")
         st.rerun()
 
@@ -332,7 +360,7 @@ def render_eval_metrics(metrics: Dict[str, float]) -> None:
 
 def render_analytics_dashboard() -> None:
     """Renders the advanced metrics and evaluation history dashboard."""
-    st.markdown("## 📊 System Performance & Quality Analytics")
+    st.markdown("## 📊 Session Performance & Quality Analytics")
     
     analytics = get_analytics()
     
@@ -340,13 +368,38 @@ def render_analytics_dashboard() -> None:
         st.info("No query logs available yet. Submit questions in the chat window to populate analytics.")
         return
         
-    # High-level aggregate cards
+    # High-level aggregate cards - Row 1
+    st.markdown("### 📈 Performance Overview")
     col1, col2, col3, col4, col5 = st.columns(5)
     col1.metric("Total Queries", analytics["total_queries"])
     col2.metric("Avg Retrieval Time", f"{analytics['average_retrieval_time']:.3f}s")
     col3.metric("Avg Response Time", f"{analytics['average_response_time']:.2f}s")
     col4.metric("Avg Faithfulness", f"{analytics['average_faithfulness']*100:.0f}%")
     col5.metric("Avg Relevance", f"{analytics['average_answer_relevance']*100:.0f}%")
+    
+    # Row 2
+    col6, col7, col8, col9, col10 = st.columns(5)
+    col6.metric("Active Documents", analytics["total_documents"])
+    col7.metric("Total DB Chunks", analytics["total_chunks"])
+    
+    duration = analytics["session_duration"]
+    if duration > 60:
+        duration_str = f"{int(duration // 60)}m {int(duration % 60)}s"
+    else:
+        duration_str = f"{int(duration)}s"
+    col8.metric("Session Duration", duration_str)
+    
+    tokens = analytics["token_usage"]
+    tot_tokens = tokens["input_tokens"] + tokens["output_tokens"]
+    col9.metric("Token Usage", f"{tot_tokens:,}", help=f"Input: {tokens['input_tokens']:,} | Output: {tokens['output_tokens']:,}")
+    col10.metric("Estimated Cost", f"${analytics['estimated_cost']:.5f}")
+    
+    # Row 3
+    col_c1, col_c2, _ = st.columns([1.5, 1.5, 2])
+    col_c1.metric("Citation Coverage", f"{analytics['average_citation_coverage']*100:.1f}%", help="Percentage of retrieved context chunks that were cited in response.")
+    
+    avg_conf = sum(analytics["confidence_scores"]) / len(analytics["confidence_scores"]) if analytics["confidence_scores"] else 0.0
+    col_c2.metric("Avg Search Confidence", f"{avg_conf*100:.1f}%", help="Normalized similarity confidence of vector search.")
     
     history = analytics["search_history"]
     if not history:
@@ -420,11 +473,40 @@ def render_analytics_dashboard() -> None:
     st.plotly_chart(fig_eval, use_container_width=True)
     
     # 3. Export/Reset Section
+    st.markdown("### 📤 Export Current Session Data")
+    col_ex1, col_ex2, col_ex3 = st.columns(3)
+    
+    chat_bytes = generate_pdf_chat(st.session_state.chat_history)
+    col_ex1.download_button(
+        label="📥 Download Session Chat (PDF)",
+        data=chat_bytes,
+        file_name=f"session_chat_{st.session_state.session_id[:8]}.pdf",
+        mime="application/pdf",
+        key="btn_download_chat_pdf"
+    )
+    
+    sources_txt = generate_sources_export()
+    col_ex2.download_button(
+        label="📥 Download Session Sources (TXT)",
+        data=sources_txt,
+        file_name=f"session_sources_{st.session_state.session_id[:8]}.txt",
+        mime="text/plain",
+        key="btn_download_sources_txt"
+    )
+    
+    analytics_json = generate_analytics_export()
+    col_ex3.download_button(
+        label="📥 Download Session Analytics (JSON)",
+        data=analytics_json,
+        file_name=f"session_analytics_{st.session_state.session_id[:8]}.json",
+        mime="application/json",
+        key="btn_download_analytics_json"
+    )
+    
     st.markdown("### 🛠️ Analytics Operations")
-    col_a, col_b = st.columns([1, 4])
-    if col_a.button("🗑️ Reset Stats", help="Clear all metrics history"):
+    if st.button("🗑️ Reset Stats", help="Clear all session metrics history", key="btn_reset_stats"):
         clear_all_metrics()
-        st.success("Successfully cleared statistics.")
+        st.success("Successfully cleared session statistics.")
         st.rerun()
 
 def render_history_table() -> None:
