@@ -6,7 +6,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 
-from config.settings import CHROMA_DIR, CHROMA_COLLECTION_NAME, CHUNK_SIZE, CHUNK_OVERLAP
+from config.settings import get_chroma_dir, CHROMA_COLLECTION_NAME, CHUNK_SIZE, CHUNK_OVERLAP
 from loaders.pdf_loader import load_pdf
 from loaders.docx_loader import load_docx
 from loaders.pptx_loader import load_pptx
@@ -22,7 +22,8 @@ def get_vector_store() -> Chroma:
     """
     embeddings = get_embeddings_model()
     # Ensure directory exists
-    CHROMA_DIR.mkdir(parents=True, exist_ok=True)
+    chroma_dir = get_chroma_dir()
+    chroma_dir.mkdir(parents=True, exist_ok=True)
     
     # Generate model-specific collection name
     model_identifier = "default"
@@ -43,7 +44,7 @@ def get_vector_store() -> Chroma:
     return Chroma(
         collection_name=collection_name,
         embedding_function=embeddings,
-        persist_directory=str(CHROMA_DIR)
+        persist_directory=str(chroma_dir)
     )
 
 def extract_documents(file_path: str) -> List[Document]:

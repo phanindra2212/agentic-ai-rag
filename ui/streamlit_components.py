@@ -6,11 +6,11 @@ import streamlit as st
 import plotly.express as px
 from typing import List, Dict, Any
 from datetime import datetime
-from pathlib import Path
 
 from rag.ingest import get_collection_statistics, remove_document_from_db, process_and_index_file
 from utils.metrics import get_analytics, clear_all_metrics
 from utils.logger import logger
+from config.settings import get_upload_dir, clear_current_session
 
 # Helper to generate TXT chat export
 def generate_txt_chat(chat_history: List[Dict[str, Any]]) -> str:
@@ -148,7 +148,7 @@ def render_sidebar_uploader() -> None:
             st.sidebar.error("You can only upload a maximum of 10 files at once.")
             uploaded_files = uploaded_files[:10]
             
-        temp_dir = Path("data/uploads")
+        temp_dir = get_upload_dir()
         temp_dir.mkdir(parents=True, exist_ok=True)
         
         # Ingestion button
@@ -219,7 +219,7 @@ def render_sidebar_collection_stats() -> Dict[str, Any]:
                     try:
                         remove_document_from_db(doc["file_name"])
                         # Delete temp file if exists
-                        temp_path = Path("data/uploads") / doc["file_name"]
+                        temp_path = get_upload_dir() / doc["file_name"]
                         if temp_path.exists():
                             os.remove(temp_path)
                         st.success(f"Deleted {doc['file_name']}")
@@ -258,6 +258,15 @@ def render_sidebar_collection_stats() -> Dict[str, Any]:
         help="Number of relevant text chunks retrieved for generation."
     )
     
+    # Clear Session button
+    st.sidebar.markdown("---")
+    if st.sidebar.button("🗑️ Clear Session", use_container_width=True, help="Wipes all uploaded files, database, and chat history."):
+        clear_current_session(st.session_state.session_id)
+        st.session_state.chat_history = []
+        st.session_state.last_query_metrics = {}
+        st.sidebar.success("Session cleared successfully!")
+        st.rerun()
+
     return {
         "file_names": selected_files,
         "file_types": selected_types,

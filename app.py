@@ -1,4 +1,5 @@
 import os
+import uuid
 
 # --- Startup Dependency Validation ---
 try:
@@ -44,6 +45,7 @@ from ui.streamlit_components import (  # noqa: E402
     generate_pdf_chat
 )
 from utils.logger import logger  # noqa: E402
+from config.settings import cleanup_orphaned_sessions  # noqa: E402
 
 # --- Page Config ---
 st.set_page_config(
@@ -54,12 +56,17 @@ st.set_page_config(
 )
 
 # Initialize Session State Variables
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "last_query_metrics" not in st.session_state:
     st.session_state.last_query_metrics = {}
 if "app_theme" not in st.session_state:
     st.session_state.app_theme = "light"
+
+# Run background cleanup of inactive sessions
+cleanup_orphaned_sessions()
 
 # --- Sidebar Theme Controller ---
 st.sidebar.markdown("### 🎨 Visual Theme")
