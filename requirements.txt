@@ -13,8 +13,3 @@ pandas>=2.0.0
 plotly>=5.18.0
 python-dotenv>=1.0.1
 sentence-transformers>=3.0.0
-torch==2.7.1
-torchvision==0.22.1
-sentence-transformers==5.0.0
-transformers==4.53.0
-langchain-huggingface==0.3.0
