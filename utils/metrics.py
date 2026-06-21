@@ -3,6 +3,9 @@ from datetime import datetime
 from typing import Dict, Any, List
 from utils.logger import logger
 
+# Global fallback for non-streamlit contexts (like unit testing)
+_fallback_metrics = None
+
 def _get_session_metrics_store() -> Dict[str, Any]:
     """Gets the session metrics store from Streamlit session state, or a fallback for unit tests."""
     try:
@@ -27,7 +30,7 @@ def _get_session_metrics_store() -> Dict[str, Any]:
         
     # Fallback for testing environments
     global _fallback_metrics
-    if "_fallback_metrics" not in globals():
+    if _fallback_metrics is None:
         _fallback_metrics = {
             "total_documents": 0,
             "total_chunks": 0,
